@@ -10,7 +10,9 @@ MongoDb.connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(errorHandler);
-app.use("/", (req, res) => res.send("Twitter application is ready"));
+// app.use("/", (req, res) => res.send("Twitter application is ready"));
+
+app.use("/api/user", require("./routes/user"))
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
