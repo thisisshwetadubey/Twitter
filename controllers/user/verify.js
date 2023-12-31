@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 
 class verify {
   async verifyOTP(data) {
-
     const { email, otp } = data;
     const user = await Verify.findOne({ email });
 
@@ -16,6 +15,7 @@ class verify {
 
     const verifiedUser = User.create({
       name: user.name,
+      userName: user.userName,
       email: user.email,
       password: user.password,
     });
@@ -41,7 +41,7 @@ class verify {
         );
       }
 
-      const deleteUser = await Verify.findOne({ otp: data.otp });
+      const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
 
       res.status(200).json({
