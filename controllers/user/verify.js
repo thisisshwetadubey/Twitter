@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 
 class verify {
   async verifyOTP(data) {
+
     const { email, otp } = data;
     const user = await Verify.findOne({ email });
 
@@ -17,17 +18,15 @@ class verify {
       name: user.name,
       email: user.email,
       password: user.password,
-      isGoogleAuth: false,
     });
 
     if (!verifiedUser) throw "Registration Failed";
-
     return verifiedUser;
   }
+
   async process(req, res) {
     try {
       validation(req.body, jsonSchema);
-
       const instance = new verify();
       let token;
       const verified = await instance.verifyOTP(req.body);
@@ -41,8 +40,11 @@ class verify {
           { expiresIn: "5h" }
         );
       }
-      console.log("token =<>", token);
-      res.status(201).json({
+
+      const deleteUser = await Verify.findOne({ otp: data.otp });
+      await Verify.deleteOne({ _id: deleteUser._id });
+
+      res.status(200).json({
         statusCode: 200,
         type: "Success",
         data: token,

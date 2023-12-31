@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema(
     },
     isGoogleAuth: {
       type: Boolean,
-      required: true,
     },
     password: {
       type: String,
@@ -25,4 +24,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model("User", userSchema);

@@ -1,12 +1,12 @@
 const Verify = require("../../models/verify");
 const User = require("../../models/user");
-const validate = require("../../util/validate")
-const jsonSchema = require("../../jsonSchema/user/signup")
+const validate = require("../../util/validate");
+const jsonSchema = require("../../jsonSchema/user/signup");
 const bcrypt = require("bcryptjs");
 const sendOtp = require("../../util/mailer");
+const jwt = require("jsonwebtoken");
 
 class signup {
-  
   async checkUser(email) {
     try {
       const check = await User.findOne({ email });
@@ -19,7 +19,7 @@ class signup {
 
   async verifyUser(data) {
     try {
-      const { name, email, password } = data;
+      const { name, email, password, isGoogleAuth } = data;
       const salt = await bcrypt.genSalt(10);
       const encrypted = await bcrypt.hash(password, salt);
 
@@ -29,6 +29,7 @@ class signup {
         name,
         email,
         password: encrypted,
+        isGoogleAuth,
         otp: otp,
       });
       if (!userVerification) throw "Failed to register";
@@ -39,19 +40,60 @@ class signup {
     }
   }
 
+  async GoogleAuth(data) {
+    const { name, email, password, isGoogleAuth } = data;
+    const instance = new signup();
+    const checkUser = await instance.checkUser(email);
+    const salt = await bcrypt.genSalt(10);
+    const encrypted = await bcrypt.hash(password, salt);
+
+    const registerUser = await User.create({
+      name,
+      email,
+      password: encrypted,
+      isGoogleAuth,
+    });
+
+    const token = jwt.sign(
+      {
+        id: registerUser._id,
+        email: registerUser.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "5h" }
+    );
+
+    return token;
+  }
+
   async process(req, res) {
     try {
-      validate(req.body, jsonSchema)
+      const { name, email, password, isGoogleAuth } = req.body;
+      validate(req.body, jsonSchema);
       const instance = new signup();
-      const checkUser = await instance.checkUser(req.body.email);
-      const verifyUser = await instance.verifyUser(req.body);
 
-      res.status(201).json({
-        statusCode: 200,
-        type: "Success",
-        data: verifyUser,
-      });
+      if (req.body.isGoogleAuth) {
+        const token = await instance.GoogleAuth(req.body);
+
+        res.status(201).json({
+          statusCode: 201,
+          type: "Success",
+          data: token,
+        });
+      }
+
+      if (!req.body.isGoogleAuth) {
+        const checkUser = await instance.checkUser(email);
+        const verifyUser = await instance.verifyUser(req.body);
+
+        res.status(201).json({
+          statusCode: 200,
+          type: "Success",
+          data: verifyUser,
+        });
+      }
     } catch (error) {
+      console.log("🚀  error:", error);
       res.status(400).json({
         statusCode: 400,
         type: "Error",
