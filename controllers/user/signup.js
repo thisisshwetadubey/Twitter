@@ -25,16 +25,26 @@ class signup {
 
       const otp = await sendOtp(email);
 
-      const userVerification = await Verify.create({
-        name,
-        username,
-        email,
-        password: encrypted,
-        isGoogleAuth,
-        otp: otp,
-      });
-      if (!userVerification) throw "Failed to register";
+      const checkUser = await Verify.findOne({ email });
 
+      if (checkUser) {
+        const updateUserVerification = await Verify.updateOne(
+          { email },
+          { $set: { name, username, email, password: encrypted, otp: otp } }
+        );
+      }
+
+      if (!checkUser) {
+        const userVerification = await Verify.create({
+          name,
+          username,
+          email,
+          password: encrypted,
+          isGoogleAuth,
+          otp: otp,
+        });
+        if (!userVerification) throw "Failed to register";
+      }
       return "OTP sended successfully";
     } catch (error) {
       throw error;
