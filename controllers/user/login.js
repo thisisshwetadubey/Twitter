@@ -18,22 +18,31 @@ class loginUser {
 
       const { email, password } = req.body;
       const userRegistered = await User.findOne({ email });
-      const token = await instance.token(userRegistered._id);
 
-      if (!userRegistered) throw "Sorry, we could not find your account";
+      if (userRegistered) {
+        const token = await instance.token(userRegistered._id);
+        const validPassword = await bcrypt.compare(
+          password,
+          userRegistered.password
+        );
+        if (!validPassword) throw "Wrong password!";
+        const data = {
+          _id: userRegistered._id,
+          name: userRegistered.name,
+          username: userRegistered.username,
+          email: userRegistered.email,
+          token : token,
 
-      const validPassword = await bcrypt.compare(
-        password,
-        userRegistered.password
-      );
+        }
 
-      if (!validPassword) throw "Wrong password!";
+        res.status(200).json({
+          statusCode: 200,
+          type: "Success",
+          data: data,
+        });
+      }
+      if(!userRegistered) throw "Sorry, we could not find your account";
 
-      res.status(200).json({
-        statusCode: 200,
-        type: "Success",
-        data: token,
-      });
     } catch (error) {
       res.status(400).json({
         statusCode: 400,
