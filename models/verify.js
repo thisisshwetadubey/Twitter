@@ -7,7 +7,7 @@ const verifyUserSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
-    userName: {
+    username: {
       type: String,
       trim: true,
       required: true,

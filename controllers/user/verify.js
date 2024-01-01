@@ -15,7 +15,7 @@ class verify {
 
     const verifiedUser = User.create({
       name: user.name,
-      userName: user.userName,
+      username: user.username,
       email: user.email,
       password: user.password,
     });

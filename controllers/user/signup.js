@@ -19,7 +19,7 @@ class signup {
 
   async verifyUser(data) {
     try {
-      const { name, userName, email, password, isGoogleAuth } = data;
+      const { name, username, email, password, isGoogleAuth } = data;
       const salt = await bcrypt.genSalt(10);
       const encrypted = await bcrypt.hash(password, salt);
 
@@ -27,7 +27,7 @@ class signup {
 
       const userVerification = await Verify.create({
         name,
-        userName,
+        username,
         email,
         password: encrypted,
         isGoogleAuth,
@@ -42,7 +42,7 @@ class signup {
   }
 
   async GoogleAuth(data) {
-    const { name, userName, email, password, isGoogleAuth } = data;
+    const { name, username, email, password, isGoogleAuth } = data;
     const instance = new signup();
     const checkUser = await instance.checkUser(email);
     const salt = await bcrypt.genSalt(10);
@@ -50,7 +50,7 @@ class signup {
 
     const registerUser = await User.create({
       name,
-      userName,
+      username,
       email,
       password: encrypted,
       isGoogleAuth,
@@ -70,7 +70,7 @@ class signup {
 
   async process(req, res) {
     try {
-      const { name, userName, email, password, isGoogleAuth } = req.body;
+      const { name, username, email, password, isGoogleAuth } = req.body;
       validate(req.body, jsonSchema);
       const instance = new signup();
 

@@ -11,7 +11,10 @@ module.exports = async (email) => {
       },
     });
 
-    const otp = otpGenerator.generate(6, {
+    const otp = otpGenerator.generate(4, {
+      digits : true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets : false,
       upperCase: false,
       specialChars: false,
     });
