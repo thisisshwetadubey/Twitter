@@ -31,18 +31,24 @@ class loginUser {
           name: userRegistered.name,
           username: userRegistered.username,
           email: userRegistered.email,
-          token : token,
+        };
 
-        }
-
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          secure:
+            process.env.COOKIE_SECRET_KEY == false
+              ? process.env.COOKIE_SECRET_KEY
+              : true, //conditional based on env
+          sameSite: "strict",
+          age: 24 * 60 * 60 * 1000,
+        });
         res.status(200).json({
           statusCode: 200,
           type: "Success",
           data: data,
         });
       }
-      if(!userRegistered) throw "Sorry, we could not find your account";
-
+      if (!userRegistered) throw "Sorry, we could not find your account";
     } catch (error) {
       res.status(400).json({
         statusCode: 400,

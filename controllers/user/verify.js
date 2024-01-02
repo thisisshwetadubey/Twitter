@@ -43,11 +43,16 @@ class verify {
 
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
-
+      const data = {
+        _id: verified._id,
+        name: verified.name,
+        username: verified.username,
+        email: verified.email,
+      };
       res.status(200).json({
         statusCode: 200,
         type: "Success",
-        data: token,
+        data: data,
       });
     } catch (error) {
       res.status(400).json({
