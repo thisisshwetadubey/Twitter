@@ -16,13 +16,14 @@ class loginUser {
       validation(req.body, jsonSchema);
       const instance = new loginUser();
 
-      const { email, password } = req.body;
+      const email = req.body.email.toLowerCase();
+
       const userRegistered = await User.findOne({ email });
 
       if (userRegistered) {
         const token = await instance.token(userRegistered._id);
         const validPassword = await bcrypt.compare(
-          password,
+          req.body.password,
           userRegistered.password
         );
         if (!validPassword) throw "Wrong password!";
@@ -31,18 +32,22 @@ class loginUser {
           name: userRegistered.name,
           username: userRegistered.username,
           email: userRegistered.email,
-          token : token,
+        };
 
-        }
-
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV !== "development",
+          //conditional based on env
+          sameSite: "strict",
+          age: 24 * 60 * 60 * 1000,
+        });
         res.status(200).json({
           statusCode: 200,
           type: "Success",
           data: data,
         });
       }
-      if(!userRegistered) throw "Sorry, we could not find your account";
-
+      if (!userRegistered) throw "Sorry, we could not find your account";
     } catch (error) {
       res.status(400).json({
         statusCode: 400,
