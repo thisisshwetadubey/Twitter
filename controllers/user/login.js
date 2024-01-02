@@ -17,7 +17,7 @@ class loginUser {
       const instance = new loginUser();
 
       const email = req.body.email.toLowerCase();
-      
+
       const userRegistered = await User.findOne({ email });
 
       if (userRegistered) {
@@ -36,10 +36,7 @@ class loginUser {
 
         res.cookie("jwt", token, {
           httpOnly: true,
-          secure:
-            process.env.NODE_ENV == "development"
-              ? process.env.COOKIE_SECRET_KEY == false
-              : process.env.COOKIE_SECRET_KEY == true,
+          secure: process.env.NODE_ENV !== "development",
           //conditional based on env
           sameSite: "strict",
           age: 24 * 60 * 60 * 1000,
