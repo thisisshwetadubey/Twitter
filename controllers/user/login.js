@@ -16,13 +16,14 @@ class loginUser {
       validation(req.body, jsonSchema);
       const instance = new loginUser();
 
-      const { email, password } = req.body;
+      const email = req.body.email.toLowerCase();
+      
       const userRegistered = await User.findOne({ email });
 
       if (userRegistered) {
         const token = await instance.token(userRegistered._id);
         const validPassword = await bcrypt.compare(
-          password,
+          req.body.password,
           userRegistered.password
         );
         if (!validPassword) throw "Wrong password!";
@@ -36,9 +37,10 @@ class loginUser {
         res.cookie("jwt", token, {
           httpOnly: true,
           secure:
-            process.env.COOKIE_SECRET_KEY == false
-              ? process.env.COOKIE_SECRET_KEY
-              : true, //conditional based on env
+            process.env.NODE_ENV == "development"
+              ? process.env.COOKIE_SECRET_KEY == false
+              : process.env.COOKIE_SECRET_KEY == true,
+          //conditional based on env
           sameSite: "strict",
           age: 24 * 60 * 60 * 1000,
         });
