@@ -80,13 +80,20 @@ class signup {
 
   async process(req, res) {
     try {
-      const { name, username, email, password, isGoogleAuth } = req.body;
       validate(req.body, jsonSchema);
       const instance = new signup();
 
       if (req.body.isGoogleAuth) {
         const token = await instance.GoogleAuth(req.body);
-
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          secure:
+            process.env.COOKIE_SECRET_KEY == false
+              ? process.env.COOKIE_SECRET_KEY
+              : true, //conditional based on env
+          sameSite: "strict",
+          age: 24 * 60 * 60 * 1000,
+        });
         res.status(201).json({
           statusCode: 201,
           type: "Success",
@@ -95,7 +102,7 @@ class signup {
       }
 
       if (!req.body.isGoogleAuth) {
-        const checkUser = await instance.checkUser(email);
+        const checkUser = await instance.checkUser(req.body.email);
         const verifyUser = await instance.verifyUser(req.body);
 
         res.status(201).json({
