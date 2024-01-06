@@ -1,4 +1,6 @@
 const Post = require("../../models/post");
+const jsonSchema = require("../../jsonSchema/post/updatePost")
+const validate = require("../../util/validate")
 
 class updatePost {
   async update(data) {
@@ -13,6 +15,7 @@ class updatePost {
 
   async process(req, res) {
     try {
+        validate(req.body,jsonSchema)
       const instance = new updatePost();
       const find = Post.findOne(req.body.id);
       if (!find) throw "No Post found!";
