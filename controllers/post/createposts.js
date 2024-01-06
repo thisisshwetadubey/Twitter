@@ -34,6 +34,7 @@ class createPost {
       throw error;
     }
   }
+  
   async process(req, res) {
     try {
         console.log("inside post process");
