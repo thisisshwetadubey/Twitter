@@ -11,5 +11,7 @@ module.exports = {
     comment: { type: "number" },
     retweet: { type: "number" },
     like: { type: "number" },
+    isLike: { type: "boolean" },
+    isBookmark: { type: "boolean" },
   },
 };
