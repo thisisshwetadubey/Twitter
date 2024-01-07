@@ -34,10 +34,9 @@ class createPost {
       throw error;
     }
   }
-  
+
   async process(req, res) {
     try {
-        console.log("inside post process");
       validation(req.body, jsonSchema);
       const instance = new createPost();
       const findUser = await instance.findUser(req.body.userId) 
