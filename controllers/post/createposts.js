@@ -1,21 +1,19 @@
 const Post = require("../../models/post");
-const User = require("../../models/user")
+const User = require("../../models/user");
 const validation = require("../../util/validate");
-const jsonSchema = require("../../jsonSchema/post/post")
+const jsonSchema = require("../../jsonSchema/post/post");
 
 class createPost {
-
-  async findUser(id){
+  async findUser(id) {
     try {
-        const find = await User.findOne({_id: id})
+      const find = await User.findOne({ _id: id });
 
-        if(!find) throw "User doesn't exists"
-        return ""
+      if (!find) throw "User doesn't exists";
+      return "";
     } catch (error) {
-        throw error
+      throw error;
     }
-
-  }  
+  }
 
   async post(data) {
     try {
@@ -39,14 +37,14 @@ class createPost {
     try {
       validation(req.body, jsonSchema);
       const instance = new createPost();
-      const findUser = await instance.findUser(req.body.userId) 
+      const findUser = await instance.findUser(req.body.userId);
       const result = await instance.post(req.body);
-      if(result){
+      if (result) {
         res.status(201).json({
-            statusCode: 201,
-            type: "Success",
-            data : result
-        })
+          statusCode: 201,
+          type: "Success",
+          data: result,
+        });
       }
     } catch (error) {
       res.status(400).json({

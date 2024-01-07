@@ -1,5 +1,7 @@
 module.exports = {
   type: "object",
+  additionalProperties: false,
+  required: true,
   email: {
     type: "string",
     pattern:
