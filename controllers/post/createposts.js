@@ -26,6 +26,15 @@ class createPost {
         retweet,
         like,
       });
+      const tags = posted.post.split(" ");
+      const hashtagWord = tags.find((word) => word.startsWith("#"));
+      await Post.updateOne(
+        { _id: posted._id },
+        {
+          tags: hashtagWord,
+        }
+      );
+
       if (!posted) throw "Unable to result post!";
       return "Post created successfully";
     } catch (error) {
@@ -39,6 +48,7 @@ class createPost {
       const instance = new createPost();
       const findUser = await instance.findUser(req.body.userId);
       const result = await instance.post(req.body);
+
       if (result) {
         res.status(201).json({
           statusCode: 201,
