@@ -1,9 +1,9 @@
 module.exports = {
   type: "object",
   additionalProperties: false,
-  required: true,
   properties: {
     name: { type: "string", required: true },
+    username: { type: "string", required: true },
     email: {
       type: "string",
       pattern:
@@ -11,5 +11,6 @@ module.exports = {
       required: true,
     },
     password: { type: "string", required: true },
+    isGoogleAuth: { type: "boolean" },
   },
 };
