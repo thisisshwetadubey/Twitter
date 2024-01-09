@@ -3,7 +3,7 @@ const Post = require("../../models/post");
 class Posts {
   async post() {
     try {
-      const posts = await Post.find();
+      const posts = await Post.find().sort({"createdAt": -1});
       if (!posts) throw "Post doesn't exists";
       return posts;
     } catch (error) {
