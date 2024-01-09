@@ -21,6 +21,7 @@ app.use(errorHandler);
 // app.use("/", (req, res) => res.send("Twitter application is ready"));
 
 app.use("/api/user", require("./routes/user"));
+app.use("/api/post", require("./routes/post"))
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
