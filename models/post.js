@@ -24,7 +24,6 @@ const postSchema = mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     comment: {
       type: Number,
@@ -45,6 +44,9 @@ const postSchema = mongoose.Schema(
     isBookmark: {
       type: Boolean,
       default: false,
+    },
+    tags: {
+      type: String,
     },
   },
   {

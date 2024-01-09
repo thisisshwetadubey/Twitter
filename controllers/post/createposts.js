@@ -7,7 +7,6 @@ class createPost {
   async findUser(id) {
     try {
       const find = await User.findOne({ _id: id });
-
       if (!find) throw "User doesn't exists";
       return find;
     } catch (error) {
@@ -15,19 +14,25 @@ class createPost {
     }
   }
 
-  async post(data, userData) {
+  async post(post, user) {
     try {
-      const { post, isRetweet, userId, comment, retweet, like } = data;
       const posted = await Post.create({
-        username: userData.username,
-        name: userData.name,
-        post,
-        isRetweet,
-        userId,
-        comment,
-        retweet,
-        like,
+        username: user.username,
+        name: user.name,
+        userId: user._id,
+        post: post
+        
       });
+
+      const tags = posted.post.split(" ");
+      const hashtagWord = tags.find((word) => word.startsWith("#"));
+      await Post.updateOne(
+        { _id: posted._id },
+        {
+          tags: hashtagWord,
+        }
+      );
+
       if (!posted) throw "Unable to result post!";
       return "Post created successfully";
     } catch (error) {
@@ -39,9 +44,10 @@ class createPost {
     try {
       validation(req.body, jsonSchema);
       const instance = new createPost();
-      const findUser = await instance.findUser(req.body.userId);
-      console.log("🚀  findUser:", findUser);
-      const result = await instance.post(req.body, findUser);
+      
+      const findUser = await instance.findUser(req.user._id);
+
+      const result = await instance.post(req.body.post, findUser);
       if (result) {
         res.status(201).json({
           statusCode: 201,
