@@ -4,7 +4,7 @@ const User = require("../../models/user");
 class getPosts {
   async posts(id) {
     try {
-      const post = await Post.findOne({ userId: id });
+      const post = await Post.find({ userId: id });
       if (!post) throw "Post doesn't exists for user";
       return post;
     } catch (error) {

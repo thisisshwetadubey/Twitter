@@ -2,6 +2,16 @@ const mongoose = require("mongoose");
 
 const postSchema = mongoose.Schema(
   {
+    username: {
+      type: String,
+      trim: true,
+      required: true,
+    },
+    name: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     post: {
       type: String,
       trim: true,
@@ -14,7 +24,6 @@ const postSchema = mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     comment: {
       type: Number,
@@ -35,6 +44,9 @@ const postSchema = mongoose.Schema(
     isBookmark: {
       type: Boolean,
       default: false,
+    },
+    tags: {
+      type: String,
     },
   },
   {
