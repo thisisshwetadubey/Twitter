@@ -9,16 +9,18 @@ class createPost {
       const find = await User.findOne({ _id: id });
 
       if (!find) throw "User doesn't exists";
-      return "";
+      return find;
     } catch (error) {
       throw error;
     }
   }
 
-  async post(data) {
+  async post(data, userData) {
     try {
       const { post, isRetweet, userId, comment, retweet, like } = data;
       const posted = await Post.create({
+        username: userData.username,
+        name: userData.name,
         post,
         isRetweet,
         userId,
@@ -38,7 +40,8 @@ class createPost {
       validation(req.body, jsonSchema);
       const instance = new createPost();
       const findUser = await instance.findUser(req.body.userId);
-      const result = await instance.post(req.body);
+      console.log("🚀  findUser:", findUser);
+      const result = await instance.post(req.body, findUser);
       if (result) {
         res.status(201).json({
           statusCode: 201,
