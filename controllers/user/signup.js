@@ -33,11 +33,11 @@ class signup {
           { $set: { name, username, email, password: encrypted, otp: otp } }
         );
       }
-      const lowerCaseName = name.charAt(0).toUpperCase() + name.slice(1);
+      const upperCaseName = name.charAt(0).toUpperCase() + name.slice(1);
 
       if (!checkUser) {
         const userVerification = await Verify.create({
-          name: lowerCaseName,
+          name: upperCaseName,
           username,
           email,
           password: encrypted,
@@ -58,9 +58,9 @@ class signup {
     const checkUser = await instance.checkUser(email);
     const salt = await bcrypt.genSalt(10);
     const encrypted = await bcrypt.hash(password, salt);
-    const lowerCaseName = name.charAt(0).toUpperCase() + name.slice(1);
+    const upperCaseName = name.charAt(0).toUpperCase() + name.slice(1);
     const registerUser = await User.create({
-      name: lowerCaseName,
+      name: upperCaseName,
       username,
       email,
       password: encrypted,
