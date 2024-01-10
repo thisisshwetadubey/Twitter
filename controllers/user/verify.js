@@ -12,12 +12,27 @@ class verify {
     if (!user) throw "User not found";
 
     if (user.otp != otp) throw "Invalid OTP";
+    const randomColor = [
+      "Yellow",
+      "Emerald",
+      "Green",
+      "Cyan",
+      "Blue",
+      "Fuchsia",
+      "Violet",
+      "Rose",
+      "Pink",
+      "Orange",
+      "Amber",
+      "Slate",
+    ];
 
-    const verifiedUser = User.create({
+    const verifiedUser = await User.create({
       name: user.name,
       username: user.username,
       email: user.email,
       password: user.password,
+      color: randomColor[Math.floor(Math.random() * randomColor.length)],
     });
 
     if (!verifiedUser) throw "Registration Failed";
