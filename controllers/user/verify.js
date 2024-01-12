@@ -46,11 +46,10 @@ class verify {
       const verified = await instance.verifyOTP(req.body);
        let token = jwt.sign(
           {
-            id: verified._id,
-            email: verified.email,
+            id: verified._id
           },
           process.env.JWT_SECRET,
-          { expiresIn: "5h" }
+          { expiresIn: "1h" }
         );
 
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
