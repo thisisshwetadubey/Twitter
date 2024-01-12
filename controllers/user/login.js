@@ -38,7 +38,6 @@ class loginUser {
         res.cookie("jwt", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV !== "development",
-          //conditional based on env
           sameSite: "strict",
           age: 24 * 60 * 60 * 1000,
         });

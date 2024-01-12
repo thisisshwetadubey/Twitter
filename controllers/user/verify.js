@@ -43,10 +43,8 @@ class verify {
     try {
       validation(req.body, jsonSchema);
       const instance = new verify();
-      let token;
       const verified = await instance.verifyOTP(req.body);
-      if (verified) {
-        token = jwt.sign(
+       let token = jwt.sign(
           {
             id: verified._id,
             email: verified.email,
@@ -54,7 +52,6 @@ class verify {
           process.env.JWT_SECRET,
           { expiresIn: "5h" }
         );
-      }
 
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
@@ -63,7 +60,16 @@ class verify {
         name: verified.name,
         username: verified.username,
         email: verified.email,
+        color: verified.color
       };
+
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: "strict",
+        age: 24 * 60 * 60 * 1000
+
+      })
       res.status(200).json({
         statusCode: 200,
         type: "Success",
