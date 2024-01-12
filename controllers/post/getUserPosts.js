@@ -4,10 +4,8 @@ const User = require("../../models/user");
 class getPosts {
   async posts(id) {
     try {
-
-      const post = await Post.findOne({_id:id  });
-      if (!post) throw "Post does not exists";
-
+      const post = await Post.find({ userId: id });
+      if (!post) throw "Post doesn't exists for user";
       return post;
     } catch (error) {
       throw error;
@@ -17,6 +15,9 @@ class getPosts {
   async process(req, res) {
     try {
       const instance = new getPosts();
+      const find = await User.findOne({ _id: req.params.id });
+      
+      if (!find) throw "User doesn't exists";
 
       const posts = await instance.posts(req.params.id);
 
