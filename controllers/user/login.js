@@ -32,6 +32,7 @@ class loginUser {
           name: userRegistered.name,
           username: userRegistered.username,
           email: userRegistered.email,
+          color: userRegistered.color
         };
 
         res.cookie("jwt", token, {
