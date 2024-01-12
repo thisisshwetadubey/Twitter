@@ -7,12 +7,10 @@ const jsonSchema = require("../../jsonSchema/comments/comments");
 class CreateComments {
   async checkIfPostAndUser(data) {
     try {
-      const checkUser = await User.findOne({ _id: data.userId });
-      if (!checkUser) throw "User doesn't exists";
-
+      
       const checkPost = await Post.findOne({ _id: data.postId });
       if (!checkPost) throw "Post doesn't exists";
-      return checkUser;
+      return "";
     } catch (error) {
       throw error;
     }
@@ -23,7 +21,7 @@ class CreateComments {
       const commented = await Comments.create({
         comments: data.comments,
         postId: data.postId,
-        userId: data.userId,
+        userId: user._id,
         userName: user.username,
         name: user.name,
         profilePicture: user.color,
@@ -40,7 +38,7 @@ class CreateComments {
       validation(req.body, jsonSchema);
       const instance = new CreateComments();
       const checkIfPostAndUser = await instance.checkIfPostAndUser(req.body);
-      const comments = await instance.comment(req.body, checkIfPostAndUser);
+      const comments = await instance.comment(req.body, req.user);
 
       res.status(201).json({
         statusCode: 201,

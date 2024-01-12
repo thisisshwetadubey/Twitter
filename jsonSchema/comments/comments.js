@@ -5,6 +5,5 @@ module.exports = {
   properties: {
     comments: { type: "string", required: true },
     postId: { type: "string", required: true },
-    userId: { type: "string" },
   },
 };
