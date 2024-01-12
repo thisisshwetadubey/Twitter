@@ -33,10 +33,11 @@ class signup {
           { $set: { name, username, email, password: encrypted, otp: otp } }
         );
       }
+      const upperCaseName = name.charAt(0).toUpperCase() + name.slice(1);
 
       if (!checkUser) {
         const userVerification = await Verify.create({
-          name,
+          name: upperCaseName,
           username,
           email,
           password: encrypted,
@@ -57,13 +58,29 @@ class signup {
     const checkUser = await instance.checkUser(email);
     const salt = await bcrypt.genSalt(10);
     const encrypted = await bcrypt.hash(password, salt);
+    const upperCaseName = name.charAt(0).toUpperCase() + name.slice(1);
+    const randomColor = [
+      "Yellow",
+      "Emerald",
+      "Green",
+      "Cyan",
+      "Blue",
+      "Fuchsia",
+      "Violet",
+      "Rose",
+      "Pink",
+      "Orange",
+      "Amber",
+      "Slate",
+    ];
 
     const registerUser = await User.create({
-      name,
+      name: upperCaseName,
       username,
       email,
       password: encrypted,
       isGoogleAuth,
+      color: randomColor[Math.floor(Math.random() * randomColor.length)],
     });
 
     const token = jwt.sign(

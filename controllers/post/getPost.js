@@ -4,8 +4,10 @@ const User = require("../../models/user");
 class getPosts {
   async posts(id) {
     try {
+
       const post = await Post.findOne({_id:id  });
       if (!post) throw "Post does not exists";
+
       return post;
     } catch (error) {
       throw error;
