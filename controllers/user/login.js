@@ -25,10 +25,11 @@ class loginUser {
           name: userRegistered.name,
           username: userRegistered.username,
           email: userRegistered.email,
+          color: userRegistered.color
         };
 
         const token = setToken(res, data._id);
-        
+  
         res.status(200).json({
           statusCode: 200,
           type: "Success",
