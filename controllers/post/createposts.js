@@ -16,22 +16,17 @@ class createPost {
 
   async post(post, user) {
     try {
+      const tags = post.split(" ")
+      const hashtagWord = tags.filter((word) => word.startsWith("#"));
+
       const posted = await Post.create({
         username: user.username,
         name: user.name,
         userId: user._id,
-        post: post
+        post: post,
+        tags: hashtagWord
         
       });
-
-      const tags = posted.post.split(" ");
-      const hashtagWord = tags.find((word) => word.startsWith("#"));
-      await Post.updateOne(
-        { _id: posted._id },
-        {
-          tags: hashtagWord,
-        }
-      );
 
       if (!posted) throw "Unable to result post!";
       return "Post created successfully";
