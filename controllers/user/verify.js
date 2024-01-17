@@ -2,7 +2,7 @@ const Verify = require("../../models/verify");
 const User = require("../../models/user");
 const validation = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/verify");
-const jwt = require("jsonwebtoken");
+const setToken = require("../../util/setToken");
 
 class verify {
   async verifyOTP(data) {
@@ -44,14 +44,11 @@ class verify {
       validation(req.body, jsonSchema);
       const instance = new verify();
       const verified = await instance.verifyOTP(req.body);
-       let token = jwt.sign(
-          {
-            id: verified._id
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: "1h" }
-        );
 
+      if (verified) {
+        const token = setToken(res, verified._id)
+      }
+      
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
       const data = {

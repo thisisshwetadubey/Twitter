@@ -45,9 +45,9 @@ const postSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tags: {
-      type: String,
-    },
+    tags: [{
+    type: String,
+    }],
   },
   {
     timestamps: true,

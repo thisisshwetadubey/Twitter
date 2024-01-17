@@ -4,7 +4,7 @@ const validate = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/signup");
 const bcrypt = require("bcryptjs");
 const sendOtp = require("../../util/mailer");
-const jwt = require("jsonwebtoken");
+const setToken = require("../../util/setToken");
 
 class signup {
   async checkUser(email) {
@@ -82,17 +82,9 @@ class signup {
       isGoogleAuth,
       color: randomColor[Math.floor(Math.random() * randomColor.length)],
     });
+    return registerUser
+   
 
-    const token = jwt.sign(
-      {
-        id: registerUser._id,
-        email: registerUser.email,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "5h" }
-    );
-
-    return token;
   }
 
   async process(req, res) {
@@ -101,20 +93,12 @@ class signup {
       const instance = new signup();
 
       if (req.body.isGoogleAuth) {
-        const token = await instance.GoogleAuth(req.body);
-        res.cookie("jwt", token, {
-          httpOnly: true,
-          secure:
-            process.env.COOKIE_SECRET_KEY == false
-              ? process.env.COOKIE_SECRET_KEY
-              : true, //conditional based on env
-          sameSite: "strict",
-          age: 24 * 60 * 60 * 1000,
-        });
+        const token = setToken(res, registerUser._id)
+      
         res.status(201).json({
           statusCode: 201,
           type: "Success",
-          data: token,
+          data: "User verified!",
         });
       }
 

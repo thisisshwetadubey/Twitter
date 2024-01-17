@@ -2,15 +2,9 @@ const User = require("../../models/user");
 const validation = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/login");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const setToken = require("../../util/setToken");
 
 class loginUser {
-  async token(id) {
-    return jwt.sign({ userId: id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-  }
-
   async process(req, res) {
     try {
       validation(req.body, jsonSchema);
@@ -21,7 +15,6 @@ class loginUser {
       const userRegistered = await User.findOne({ email });
 
       if (userRegistered) {
-        const token = await instance.token(userRegistered._id);
         const validPassword = await bcrypt.compare(
           req.body.password,
           userRegistered.password
@@ -35,12 +28,8 @@ class loginUser {
           color: userRegistered.color
         };
 
-        res.cookie("jwt", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== "development",
-          sameSite: "strict",
-          age: 24 * 60 * 60 * 1000,
-        });
+        const token = setToken(res, data._id);
+  
         res.status(200).json({
           statusCode: 200,
           type: "Success",
