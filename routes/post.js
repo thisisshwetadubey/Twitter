@@ -8,7 +8,7 @@ router.get("/get/:id", protect,require("../controllers/post/getUserPosts").proce
 router.delete("/delete/:id", protect,require("../controllers/post/deletepost").process)
 router.put("/update", protect,require("../controllers/post/updatepost").process)
 router.get("/getPost/:id", protect,require("../controllers/post/getPost").process)
-router.post("/isLike/:id", require("../controllers/post/isLike").process)
+router.post("/isLike/:id", protect,require("../controllers/post/likeOnPost").process)
 router.post("/isRetweet/:id", require("../controllers/post/isRetweet").process)
 router.post("/isBookmark/:id", require("../controllers/post/isBookmark").process)
 router.post("/createComment", protect,require("../controllers/comments/create").process)
