@@ -13,7 +13,7 @@ class isLikeToggle {
           { _id: find._id },
           { like: likeCount }
         );
-        return "Post Un-Liked!";
+        return "Post UnLiked!";
       }
       const add = await Like.create({
         postId: data._id,
