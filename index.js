@@ -22,6 +22,7 @@ app.use(errorHandler);
 
 app.use("/api/user", require("./routes/user"));
 app.use("/api/post", require("./routes/post"))
+app.use("/api/search", require("./routes/search"))
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
