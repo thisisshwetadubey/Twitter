@@ -33,6 +33,10 @@ const postSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    retweetUserId: {
+      userId: { type: mongoose.Schema.Types.ObjectId },
+      name: { type: String },
+    },
     like: {
       type: Number,
       default: 0,
@@ -45,9 +49,11 @@ const postSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tags: [{
-    type: String,
-    }],
+    tags: [
+      {
+        type: String,
+      },
+    ],
   },
   {
     timestamps: true,

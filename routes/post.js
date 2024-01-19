@@ -9,7 +9,7 @@ router.delete("/delete/:id", protect,require("../controllers/post/deletepost").p
 router.put("/update", protect,require("../controllers/post/updatepost").process)
 router.get("/getPost/:id", protect,require("../controllers/post/getPost").process)
 router.post("/isLike/:id", protect,require("../controllers/post/likeOnPost").process)
-router.post("/isRetweet/:id", require("../controllers/post/isRetweet").process)
+router.post("/retweet/:id", protect,require("../controllers/post/retweet").process)
 router.post("/isBookmark/:id", require("../controllers/post/isBookmark").process)
 router.post("/createComment", protect,require("../controllers/comments/create").process)
 router.get("/comment", protect,require("../controllers/comments/getAllComments").process)
