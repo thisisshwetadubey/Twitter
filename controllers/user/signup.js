@@ -74,6 +74,10 @@ class signup {
       "Slate",
     ];
 
+    const currentDate = new Date()
+    const options = {year: 'numeric', month: 'long'}
+    const formattedMonthYear = currentDate.toLocaleString('en-Us', options)
+
     const registerUser = await User.create({
       name: upperCaseName,
       username,
@@ -81,6 +85,7 @@ class signup {
       password: encrypted,
       isGoogleAuth,
       color: randomColor[Math.floor(Math.random() * randomColor.length)],
+      joinedDate: `Joined ${formattedMonthYear}`
     });
     return registerUser
    
@@ -91,6 +96,7 @@ class signup {
     try {
       validate(req.body, jsonSchema);
       const instance = new signup();
+      const registerUser = await instance.GoogleAuth(req.body) 
 
       if (req.body.isGoogleAuth) {
         const token = setToken(res, registerUser._id)

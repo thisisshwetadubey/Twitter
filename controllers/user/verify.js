@@ -27,12 +27,17 @@ class verify {
       "Slate",
     ];
 
+    const currentDate = new Date()
+    const options = {year: 'numeric', month: 'long'}
+    const formattedMonthYear = currentDate.toLocaleString('en-Us', options)
+
     const verifiedUser = await User.create({
       name: user.name,
       username: user.username,
       email: user.email,
       password: user.password,
       color: randomColor[Math.floor(Math.random() * randomColor.length)],
+      joinedDate: `Joined ${formattedMonthYear}`
     });
 
     if (!verifiedUser) throw "Registration Failed";
@@ -56,16 +61,10 @@ class verify {
         name: verified.name,
         username: verified.username,
         email: verified.email,
-        color: verified.color
+        color: verified.color,
+        joinedDate: verified.joinedDate
       };
 
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: "strict",
-        age: 24 * 60 * 60 * 1000
-
-      })
       res.status(200).json({
         statusCode: 200,
         type: "Success",
