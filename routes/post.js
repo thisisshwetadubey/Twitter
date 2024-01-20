@@ -14,6 +14,5 @@ router.post("/isBookmark/:id", require("../controllers/post/isBookmark").process
 router.post("/createComment", protect,require("../controllers/comments/create").process)
 router.get("/comment", protect,require("../controllers/comments/getAllComments").process)
 router.get("/comment/:id", protect,require("../controllers/comments/getComment").process)
-router.get("/trending",protect,require("../controllers/search/trending").process)
 
 module.exports = router
