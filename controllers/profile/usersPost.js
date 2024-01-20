@@ -1,7 +1,7 @@
 const Post = require("../../models/post");
 const User = require("../../models/user");
 
-class getPosts {
+class usersPost {
   async posts(id) {
     try {
       const post = await Post.find({ userId: id });
@@ -14,12 +14,12 @@ class getPosts {
 
   async process(req, res) {
     try {
-      const instance = new getPosts();
-      const find = await User.findOne({ _id: req.params.id });
-      
+      const instance = new usersPost();
+      const find = await User.findOne({ _id: req.user._id });
+
       if (!find) throw "User doesn't exists";
 
-      const posts = await instance.posts(req.params.id);
+      const posts = await instance.posts(req.user._id);
 
       res.status(200).json({
         statusCode: 200,
@@ -36,4 +36,4 @@ class getPosts {
   }
 }
 
-module.exports = new getPosts();
+module.exports = new usersPost();
