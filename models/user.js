@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    bio:{
+      type: String
+    },
     isGoogleAuth: {
       type: Boolean,
     },
@@ -23,6 +26,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    color:{
+      type: String
+    },
+    joinedDate:{
+      type: String
+    }
   },
   {
     timestamps: true,

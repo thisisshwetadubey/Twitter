@@ -7,10 +7,18 @@ const MongoDb = require("./config/db");
 const dotenv = require("dotenv");
 dotenv.config();
 
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:5173"
+      : process.env.ClIENT_URL,
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 const errorHandler = require("./middlewares/errorHandler").error;
 
 app.use(cookieParser());
-app.use(cors());
 app.use(bodyParser.json());
 MongoDb.connectDB();
 
@@ -21,6 +29,9 @@ app.use(errorHandler);
 // app.use("/", (req, res) => res.send("Twitter application is ready"));
 
 app.use("/api/user", require("./routes/user"));
+app.use("/api/post", require("./routes/post"));
+app.use("/api/search", require("./routes/search"));
+app.use("/api/profile", require("./routes/profile"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

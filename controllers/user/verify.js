@@ -2,7 +2,7 @@ const Verify = require("../../models/verify");
 const User = require("../../models/user");
 const validation = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/verify");
-const jwt = require("jsonwebtoken");
+const setToken = require("../../util/setToken");
 
 class verify {
   async verifyOTP(data) {
@@ -12,12 +12,32 @@ class verify {
     if (!user) throw "User not found";
 
     if (user.otp != otp) throw "Invalid OTP";
+    const randomColor = [
+      "Yellow",
+      "Emerald",
+      "Green",
+      "Cyan",
+      "Blue",
+      "Fuchsia",
+      "Violet",
+      "Rose",
+      "Pink",
+      "Orange",
+      "Amber",
+      "Slate",
+    ];
 
-    const verifiedUser = User.create({
+    const currentDate = new Date()
+    const options = {year: 'numeric', month: 'long'}
+    const formattedMonthYear = currentDate.toLocaleString('en-Us', options)
+
+    const verifiedUser = await User.create({
       name: user.name,
       username: user.username,
       email: user.email,
       password: user.password,
+      color: randomColor[Math.floor(Math.random() * randomColor.length)],
+      joinedDate: `Joined ${formattedMonthYear}`
     });
 
     if (!verifiedUser) throw "Registration Failed";
@@ -28,19 +48,12 @@ class verify {
     try {
       validation(req.body, jsonSchema);
       const instance = new verify();
-      let token;
       const verified = await instance.verifyOTP(req.body);
-      if (verified) {
-        token = jwt.sign(
-          {
-            id: verified._id,
-            email: verified.email,
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: "5h" }
-        );
-      }
 
+      if (verified) {
+        const token = setToken(res, verified._id)
+      }
+      
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
       const data = {
@@ -48,7 +61,10 @@ class verify {
         name: verified.name,
         username: verified.username,
         email: verified.email,
+        color: verified.color,
+        joinedDate: verified.joinedDate
       };
+
       res.status(200).json({
         statusCode: 200,
         type: "Success",
