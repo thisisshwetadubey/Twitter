@@ -10,10 +10,11 @@ dotenv.config();
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "development"
-      ? "http://localhost:5173"
-      : process.env.ClIENT_URL,
+      ? process.env.LOCAL_CLIENT_URL
+      : process.env.PRODUCTION_ClIENT_URL,
   credentials: true,
 };
+console.log("🚀 ~ corsOptions:", corsOptions)
 app.use(cors(corsOptions));
 
 const errorHandler = require("./middlewares/errorHandler").error;
