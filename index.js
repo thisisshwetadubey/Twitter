@@ -8,10 +8,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "development"
-      ? process.env.LOCAL_CLIENT_URL
-      : process.env.PRODUCTION_ClIENT_URL,
+  origin:"https://twitter-frontend-ruddy.vercel.app",
   credentials: true,
 };
 console.log("🚀 ~ corsOptions:", corsOptions)
