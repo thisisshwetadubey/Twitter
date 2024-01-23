@@ -8,10 +8,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const corsOptions = {
-  origin: "https://twitter-frontend-ruddy.vercel.app/",
+  origin: "*", // Change this to your specific frontend origin in production
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
+  optionsSuccessStatus: 204,
 };
-console.log("🚀 ~ corsOptions:", corsOptions);
+console.log("🚀 ~ corsOptions:", corsOptions)
 app.use(cors(corsOptions));
 
 const errorHandler = require("./middlewares/errorHandler").error;
