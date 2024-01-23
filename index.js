@@ -8,10 +8,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const corsOptions = {
-  origin:"https://twitter-frontend-ruddy.vercel.app",
+  origin: "https://twitter-frontend-ruddy.vercel.app/",
   credentials: true,
 };
-console.log("🚀 ~ corsOptions:", corsOptions)
+console.log("🚀 ~ corsOptions:", corsOptions);
 app.use(cors(corsOptions));
 
 const errorHandler = require("./middlewares/errorHandler").error;
