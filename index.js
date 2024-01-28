@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const corsOptions = {
-  origin: "*", // Change this to your specific frontend origin in production
+  origin: process.env.CORS_ORIGIN, // Change this to your specific frontend origin in production
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
