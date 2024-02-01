@@ -2,7 +2,7 @@ const User = require("../../models/user");
 const validation = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/login");
 const bcrypt = require("bcryptjs");
-const setToken = require("../../util/setToken");
+const { setToken } = require("../../util/setToken");
 
 class loginUser {
   async process(req, res) {
@@ -25,16 +25,16 @@ class loginUser {
           name: userRegistered.name,
           username: userRegistered.username,
           email: userRegistered.email,
-          color: userRegistered.color
+          color: userRegistered.color,
         };
 
-        const token = setToken(res, data._id);
-  
-        res.status(200).json({
-          statusCode: 200,
-          type: "Success",
-          data: data,
-        });
+        const token = await setToken(res, data._id);
+        const { refreshToken, accessToken, options } = token;
+        res
+          .status(200)
+          .cookie("jwt", accessToken, options)
+          .cookie("refreshToken", refreshToken, options)
+          .json({ statusCode: 200, type: "Success", data: data });
       }
       if (!userRegistered) throw "Sorry, we could not find your account";
     } catch (error) {
