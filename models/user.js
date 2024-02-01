@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    bio:{
-      type: String
+    bio: {
+      type: String,
     },
     isGoogleAuth: {
       type: Boolean,
@@ -26,12 +26,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    color:{
-      type: String
+    color: {
+      type: String,
     },
-    joinedDate:{
-      type: String
-    }
+    joinedDate: {
+      type: String,
+    },
+    refreshToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,
