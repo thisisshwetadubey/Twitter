@@ -4,7 +4,7 @@ const validate = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/signup");
 const bcrypt = require("bcryptjs");
 const sendOtp = require("../../util/mailer");
-const setToken = require("../../util/setToken");
+const { setToken } = require("../../util/setToken");
 
 class signup {
   async checkUser(email) {
@@ -74,9 +74,9 @@ class signup {
       "Slate",
     ];
 
-    const currentDate = new Date()
-    const options = {year: 'numeric', month: 'long'}
-    const formattedMonthYear = currentDate.toLocaleString('en-Us', options)
+    const currentDate = new Date();
+    const options = { year: "numeric", month: "long" };
+    const formattedMonthYear = currentDate.toLocaleString("en-Us", options);
 
     const registerUser = await User.create({
       name: upperCaseName,
@@ -85,27 +85,31 @@ class signup {
       password: encrypted,
       isGoogleAuth,
       color: randomColor[Math.floor(Math.random() * randomColor.length)],
-      joinedDate: `Joined ${formattedMonthYear}`
+      joinedDate: `Joined ${formattedMonthYear}`,
     });
-    return registerUser
-   
-
+    return registerUser;
   }
 
   async process(req, res) {
     try {
       validate(req.body, jsonSchema);
       const instance = new signup();
-      const registerUser = await instance.GoogleAuth(req.body) 
 
       if (req.body.isGoogleAuth) {
-        const token = setToken(res, registerUser._id)
-      
-        res.status(201).json({
-          statusCode: 201,
-          type: "Success",
-          data: "User verified!",
-        });
+        const registerUser = await instance.GoogleAuth(req.body);
+
+        const token = setToken(res, registerUser._id);
+        const { refreshToken, accessToken, options } = token;
+
+        res
+          .status(201)
+          .cookie("jwt", accessToken, options)
+          .cookie("refreshToken", refreshToken, options)
+          .json({
+            statusCode: 201,
+            type: "Success",
+            data: "User verified!",
+          });
       }
 
       if (!req.body.isGoogleAuth) {

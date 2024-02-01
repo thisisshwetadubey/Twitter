@@ -2,7 +2,7 @@ const Verify = require("../../models/verify");
 const User = require("../../models/user");
 const validation = require("../../util/validate");
 const jsonSchema = require("../../jsonSchema/user/verify");
-const setToken = require("../../util/setToken");
+const { setToken } = require("../../util/setToken");
 
 class verify {
   async verifyOTP(data) {
@@ -27,9 +27,9 @@ class verify {
       "Slate",
     ];
 
-    const currentDate = new Date()
-    const options = {year: 'numeric', month: 'long'}
-    const formattedMonthYear = currentDate.toLocaleString('en-Us', options)
+    const currentDate = new Date();
+    const options = { year: "numeric", month: "long" };
+    const formattedMonthYear = currentDate.toLocaleString("en-Us", options);
 
     const verifiedUser = await User.create({
       name: user.name,
@@ -37,7 +37,7 @@ class verify {
       email: user.email,
       password: user.password,
       color: randomColor[Math.floor(Math.random() * randomColor.length)],
-      joinedDate: `Joined ${formattedMonthYear}`
+      joinedDate: `Joined ${formattedMonthYear}`,
     });
 
     if (!verifiedUser) throw "Registration Failed";
@@ -50,10 +50,6 @@ class verify {
       const instance = new verify();
       const verified = await instance.verifyOTP(req.body);
 
-      if (verified) {
-        const token = setToken(res, verified._id)
-      }
-      
       const deleteUser = await Verify.findOne({ otp: req.body.otp });
       await Verify.deleteOne({ _id: deleteUser._id });
       const data = {
@@ -62,14 +58,21 @@ class verify {
         username: verified.username,
         email: verified.email,
         color: verified.color,
-        joinedDate: verified.joinedDate
+        joinedDate: verified.joinedDate,
       };
 
-      res.status(200).json({
-        statusCode: 200,
-        type: "Success",
-        data: data,
-      });
+      const token = await setToken(res, verified._id);
+      const { refreshToken, accessToken, options } = token;
+
+      res
+        .status(200)
+        .cookie("jwt", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({
+          statusCode: 200,
+          type: "Success",
+          data: data,
+        });
     } catch (error) {
       res.status(400).json({
         statusCode: 400,
