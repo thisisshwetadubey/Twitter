@@ -1,1 +1,1 @@
-This is the Twitter application.
+This is the Twitter backend application
